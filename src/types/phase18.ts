@@ -18,6 +18,7 @@ export type ProviderType =
   | 'azure-openai'
   | 'google'
   | 'ollama'
+  | 'lmstudio'
   | 'bedrock'
   | 'openrouter'
   | 'groq'

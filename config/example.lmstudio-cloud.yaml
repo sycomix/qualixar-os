@@ -1,0 +1,50 @@
+# Example: Cloud-Hosted LM Studio Configuration
+# For cloud deployments with LM Studio servers (e.g., AWS EC2, Azure VMs, etc.)
+# This config demonstrates cloud-hostable setup with CORS support
+
+mode: companion
+
+providers:
+  # Local LM Studio for development
+  local-llm:
+    type: lmstudio
+    endpoint: http://localhost:1234
+  
+  # Cloud-hosted LM Studio - example using environment variable
+  # Set LM_STUDIO_CLOUD_URL environment variable to your cloud URL
+  cloud-llm:
+    type: lmstudio
+    endpoint_env: LM_STUDIO_CLOUD_URL  # e.g., https://llm.example.com:1234
+    apiKey_env: LM_STUDIO_API_KEY       # Optional: for auth-required endpoints
+
+models:
+  primary: cloud-llm/model-name
+  fallback: local-llm/fallback-model
+  catalog:
+    - name: cloud-llm/neural-chat
+      provider: cloud-llm
+      deployment: neural-chat
+      quality_score: 0.75
+      cost_per_input_token: 0
+      cost_per_output_token: 0
+      max_tokens: 2048
+    - name: cloud-llm/mistral-7b
+      provider: cloud-llm
+      deployment: mistral-7b
+      quality_score: 0.80
+      cost_per_input_token: 0
+      cost_per_output_token: 0
+      max_tokens: 8192
+    - name: local-llm/fallback-model
+      provider: local-llm
+      deployment: fallback-model
+      quality_score: 0.65
+      max_tokens: 4096
+
+embeddings:
+  provider: cloud-llm
+  model: nomic-embed-text
+
+# Note: CORS restrictions are automatically removed for LLM and embeddings endpoints
+# in cloud-hosting mode, allowing client-side requests from any origin.
+# See QOS_CORS_ORIGIN environment variable for dashboard CORS configuration.

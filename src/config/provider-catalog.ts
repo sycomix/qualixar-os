@@ -98,6 +98,26 @@ export const PROVIDER_CATALOG: readonly ProviderCatalogEntry[] = [
     ],
   },
   {
+    id: 'lmstudio',
+    displayName: 'LM Studio',
+    type: 'lmstudio',
+    icon: 'lmstudio',
+    description: 'Local & cloud-hosted models via LM Studio OpenAI API',
+    supportsEmbeddings: true,
+    defaultApiKeyEnv: '',
+    defaultEndpoint: 'http://localhost:1234',
+    configFields: [
+      { name: 'endpoint', label: 'LM Studio URL', type: 'url', required: false, placeholder: 'http://localhost:1234', helpText: 'LM Studio server URL (default: localhost:1234, supports cloud-hosted URLs without CORS restrictions)' },
+      { name: 'apiKey', label: 'API Key (optional)', type: 'password', required: false, placeholder: '', helpText: 'API key if endpoint requires authentication', supportsEnvRef: true },
+    ],
+    embeddingModels: [
+      { modelId: 'nomic-embed-text', displayName: 'Nomic Embed Text', dimensions: 768, maxTokens: 8192 },
+      { modelId: 'mxbai-embed-large', displayName: 'mxbai Embed Large', dimensions: 1024, maxTokens: 512 },
+      { modelId: 'all-minilm', displayName: 'All MiniLM', dimensions: 384, maxTokens: 256 },
+      { modelId: 'jina-embeddings-v2-base-en', displayName: 'Jina Embeddings v2', dimensions: 768, maxTokens: 8192 },
+    ],
+  },
+  {
     id: 'bedrock',
     displayName: 'AWS Bedrock',
     type: 'bedrock',

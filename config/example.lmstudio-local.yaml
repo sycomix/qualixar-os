@@ -1,0 +1,34 @@
+# Example: Local LM Studio Configuration
+# For users running LM Studio locally or cloud-hosted with CORS enabled
+# LM Studio provides OpenAI-compatible API endpoints
+
+mode: companion
+
+providers:
+  local-llm:
+    type: lmstudio
+    endpoint: http://localhost:1234
+  # For cloud-hosted LM Studio (e.g., on your server with CORS enabled)
+  # cloud-llm:
+  #   type: lmstudio
+  #   endpoint: https://your-lmstudio-server.com:1234
+  #   apiKey_env: LM_STUDIO_API_KEY  # Optional if authentication is required
+
+models:
+  primary: local-llm/model-name
+  fallback: local-llm/alternative-model
+  catalog:
+    - name: local-llm/neural-chat
+      provider: local-llm
+      deployment: neural-chat
+      quality_score: 0.75
+      max_tokens: 2048
+    - name: local-llm/mistral
+      provider: local-llm
+      deployment: mistral
+      quality_score: 0.80
+      max_tokens: 8192
+
+embeddings:
+  provider: local-llm
+  model: nomic-embed-text

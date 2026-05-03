@@ -165,12 +165,26 @@ export function createHttpApp(orchestrator: Orchestrator): Hono {
 
   // CORS middleware — allow dashboard and external API consumers
   // M-10: Check request Origin against allowedOrigins list, set matching origin in response
+  // Cloud-hosting support: LLM and embeddings endpoints allow any origin (CORS unrestricted)
   app.use('*', async (c, next) => {
+    const requestPath = c.req.path;
     const requestOrigin = c.req.header('Origin');
-    const matchedOrigin = requestOrigin && allowedOrigins.includes(requestOrigin)
-      ? requestOrigin
-      : allowedOrigin;
-    c.header('Access-Control-Allow-Origin', matchedOrigin);
+    
+    // Check if this is an LLM or embeddings provider endpoint (cloud-hostable routes)
+    const isLlmOrEmbeddingsEndpoint = requestPath.match(/\/(api\/)?v1\/(chat|completions|embeddings|models)/i);
+    
+    if (isLlmOrEmbeddingsEndpoint && requestOrigin) {
+      // Cloud-hosting mode: Allow any origin for LLM/embeddings endpoints
+      // This enables use of LM Studio and similar providers from any client
+      c.header('Access-Control-Allow-Origin', requestOrigin);
+    } else {
+      // Standard CORS: Check against allowedOrigins list
+      const matchedOrigin = requestOrigin && allowedOrigins.includes(requestOrigin)
+        ? requestOrigin
+        : allowedOrigin;
+      c.header('Access-Control-Allow-Origin', matchedOrigin);
+    }
+    
     c.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
     c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     c.header('Access-Control-Max-Age', '86400');
